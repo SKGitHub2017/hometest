@@ -15,11 +15,12 @@ public class Research {
     public static void main(String[] args) throws IOException {
 
         //http://more-sky.com/data/out/9/IMG_345056.jpg
-        URL url = new URL("http://more-sky.com/data/out/9/IMG_345056.jpg");
+        String urlString = "http://more-sky.com/data/out/9/IMG_345056.jpg";
+        URL url = new URL(urlString);
 
         System.out.println(getFileSize(url));
 
-        saveUrl("IMG_345056.jpg", "http://more-sky.com/data/out/9/IMG_345056.jpg");
+        saveUrl("IMG_345056.jpg", urlString);
 
         System.out.println("Free disk " + new File("/").getFreeSpace());
 
