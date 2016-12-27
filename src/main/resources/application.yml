@@ -1,0 +1,6 @@
+server:
+     port: 8888
+
+download :
+    file :
+      location : C:\Users\U8016976\Downloads
