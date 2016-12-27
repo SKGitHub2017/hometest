@@ -56,17 +56,15 @@ public class HttpDownloadService extends DownloadService {
             log.error("Download failed  : {} ", ex.getMessage());
             throw new DownloadServiceException("Download failed " + ex.getMessage());
         } finally {
-
             try {
                 bufferedInputStream.close();
             } catch (IOException e) {
-                //
+                log.error("Buffered input stream close error: {} ", e.getMessage());
             }
-
             try {
                 fileOutputStream.close();
             } catch (IOException e) {
-                //
+                log.error("File output stream close error: {} ", e.getMessage());
             }
 
         }

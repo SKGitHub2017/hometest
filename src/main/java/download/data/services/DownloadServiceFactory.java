@@ -1,8 +1,6 @@
 package download.data.services;
 
-
-import download.data.services.implementation.FtpDownloadService;
-import download.data.services.implementation.HttpDownloadService;
+import download.data.services.implementation.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +12,8 @@ public class DownloadServiceFactory {
             return new HttpDownloadService();
         } else if (url.toLowerCase().trim().startsWith("ftp")) {
             return new FtpDownloadService();
+        } else if (url.toLowerCase().trim().startsWith("sftp")) {
+            return new SftpDownloadService();
         }
         return null;
     }
