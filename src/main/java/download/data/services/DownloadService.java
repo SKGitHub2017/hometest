@@ -44,13 +44,11 @@ public abstract class DownloadService {
 
     protected abstract boolean download();
 
-    //TODO: it's could be running as a thread
     protected void updateProgress(int currentDownloadSize) {
 
         System.out.print("\r Download status :  " +  currentDownloadSize + " of " + fileSize + " bytes. [Remaining memory size = " + getFreeMemory() + "]");
     }
 
-    //TODO: should be save in DB, but in this demo just using in memory
     private boolean alreadyDownload() {
         return false;
     }

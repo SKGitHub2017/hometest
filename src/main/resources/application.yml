@@ -3,4 +3,4 @@ server:
 
 download :
     file :
-      location : C:\Users\U8016976\Downloads
+      location : C:\\downloads
