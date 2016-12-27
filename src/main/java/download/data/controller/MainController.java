@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import java.io.File;
+import java.util.UUID;
 
 @RestController
 public class MainController {
@@ -17,24 +19,44 @@ public class MainController {
     @Autowired
     private DownloadServiceFactory downloadServiceFactory;
 
+    /*
+        {
+        "url" : "http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg, ftp://other.file.com/other, sftp://and.also.this/ending",
+        "file_name" : "test3.jpg"
+        }
+     */
     @RequestMapping(value = "/download", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean download(@RequestBody RequestPayload requestPayload)
             throws InterruptedException {
 
-        DownloadService downloadService = downloadServiceFactory.getDownLoadService(requestPayload.getUrl());
-        downloadService.setUrl(requestPayload.getUrl());
-        downloadService.setTargetLocation(targetLocation);
-        downloadService.setFileName(requestPayload.getFileName());
-        try {
-             downloadService.handler();
-             System.out.println();
-             System.out.println("!!!!!!!!!! Download completed !!!!!!!!!");
-            return true;
-        } catch (Exception ex) {
-            System.out.println();
-            System.out.println("************ Download failed : " + ex.getMessage() + " *************");
-            return false;
+        String[] urls = requestPayload.getUrl().split( ",\\s*" ); // split on commas
+
+        final File targetDirectory = new File(targetLocation);
+        if(!targetDirectory.exists()) {
+            boolean result = targetDirectory.mkdir();
+            if(result) {
+                System.out.println("The directory \"" + targetLocation + "\" is created !");
+            }
+        } else {
+            System.out.println("The directory \"" + targetLocation + "\" already exist");
         }
 
+        for (String url: urls) {
+
+            DownloadService downloadService = downloadServiceFactory.getDownLoadService(url);
+            downloadService.setUrl(url);
+            downloadService.setTargetLocation(targetLocation);
+            String fileName = url.substring(url.lastIndexOf('/') + 1);
+            downloadService.setFileName(fileName);
+            try {
+                downloadService.handler();
+                System.out.println();
+                System.out.println("!!!!!!!!!! Download completed !!!!!!!!!");
+            } catch (Exception ex) {
+                System.out.println();
+                System.out.println("************ Download failed : " + ex.getMessage() + " *************");
+            }
+        }
+        return false;
     }
 }

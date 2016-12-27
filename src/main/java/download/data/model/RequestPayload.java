@@ -8,11 +8,7 @@ public class RequestPayload {
 
     @JsonProperty("url")
     @SerializedName("url")
-     private String url;
-
-    @JsonProperty("file_name")
-    @SerializedName("file_name")
-    private String fileName;
+    private String url;
 
     public String getUrl() {
         return url;
@@ -22,19 +18,8 @@ public class RequestPayload {
         this.url = url;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
     @Override
     public String toString() {
-        return "RequestPayload{" +
-                "url='" + url + '\'' +
-                ", fileName='" + fileName + '\'' +
-                '}';
+        return "RequestPayload{url='" + url + "'}";
     }
 }
