@@ -14,19 +14,26 @@ public class Research {
 
     public static void main(String[] args) throws IOException {
 
-        //http://more-sky.com/data/out/9/IMG_345056.jpg
         String urlString = "http://more-sky.com/data/out/9/IMG_345056.jpg";
         URL url = new URL(urlString);
 
         System.out.println(getFileSize(url));
 
-        saveUrl("IMG_345056.jpg", urlString);
+        String fileName = getFileName(url);
+
+        saveUrl(fileName, urlString);
 
         System.out.println("Free disk " + new File("/").getFreeSpace());
 
         long heapFreeSize = Runtime.getRuntime().freeMemory();
 
         System.out.println("Heap free size : " + heapFreeSize);
+    }
+
+    private static String getFileName(URL url) {
+        String[] filePathList = url.getFile().split("/");
+        int indexOfFileName = (filePathList.length > 0 ? (filePathList.length -1) : 0);
+        return filePathList[indexOfFileName];
     }
 
     private static int getFileSize(URL url) {
@@ -59,7 +66,7 @@ public class Research {
 
                 fileOutputStream.write(data, 0, count);
             }
-            System.out.println("\n Download completed.");
+            System.out.println("\nDownload "+ filename +" completed.");
         } finally {
             if (bufferedInputStream != null) {
                 bufferedInputStream.close();
