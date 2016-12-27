@@ -71,6 +71,15 @@ public abstract class DownloadService {
     }
 
     public void setTargetLocation(String targetLocation) {
+        final File targetDirectory = new File(targetLocation);
+        if(!targetDirectory.exists()) {
+            boolean result = targetDirectory.mkdir();
+            if(result) {
+                System.out.println("The directory \"" + targetLocation + "\" is created !");
+            }
+        } else {
+            System.out.println("The directory \"" + targetLocation + "\" already exist");
+        }
         this.targetLocation = targetLocation;
     }
 
@@ -81,5 +90,4 @@ public abstract class DownloadService {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-
 }

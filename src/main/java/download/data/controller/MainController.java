@@ -18,7 +18,7 @@ public class MainController {
     private DownloadServiceFactory downloadServiceFactory;
 
     @RequestMapping(value = "/download", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public boolean create(@RequestBody RequestPayload requestPayload)
+    public boolean download(@RequestBody RequestPayload requestPayload)
             throws InterruptedException {
 
         DownloadService downloadService = downloadServiceFactory.getDownLoadService(requestPayload.getUrl());
