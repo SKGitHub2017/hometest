@@ -18,7 +18,7 @@ public class HttpDownloadService extends DownloadService {
     public int getFileSize()  {
         HttpURLConnection conn = null;
         try {
-            URL url  = new URL(getUrl());
+            URL url = new URL(getUrl());
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("HEAD");
             conn.getInputStream();
@@ -59,8 +59,8 @@ public class HttpDownloadService extends DownloadService {
             return true;
         }catch (Exception ex) {
             log.error("=============== ERROR ================");
-            log.error("Download failed  : {} ", ex.getMessage());
-            throw new DownloadServiceException("Download failed " + ex.getMessage());
+            log.error("Download " + getFileName() + " failed  : {} ", ex.getMessage());
+            throw new DownloadServiceException("Download " + getFileName() + " failed " + ex.getMessage());
         } finally {
             try {
                 bufferedInputStream.close();

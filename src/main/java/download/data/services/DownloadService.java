@@ -3,6 +3,7 @@ package download.data.services;
 
 import download.data.exception.FileAlreadyDownloadException;
 import download.data.exception.LessMemoryException;
+import download.data.utility.DownloadFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,17 +19,17 @@ public abstract class DownloadService {
 
     private String fileName;
 
-    private int fileSize;
+    private int lenghtOfFile;
 
     protected abstract int getFileSize();
 
     public boolean handler() {
-        fileSize = getFileSize();
+        lenghtOfFile = getFileSize();
         long freeMemory = getFreeMemory();
-        if (fileSize > freeMemory) {
+        if (lenghtOfFile > freeMemory) {
             log.error("=============== ERROR ================");
             log.error("Memory is not enough to save the file.");
-            log.error("File size is : {} ", fileSize);
+            log.error("File size is : {} ", lenghtOfFile);
             log.error("Memory available size is : {} ", freeMemory);
             throw new LessMemoryException("Memory is not enough");
         }
@@ -45,8 +46,8 @@ public abstract class DownloadService {
     protected abstract boolean download();
 
     protected void updateProgress(int currentDownloadSize) {
-
-        System.out.print("\r Download status :  " +  currentDownloadSize + " of " + fileSize + " bytes. [Remaining memory size = " + getFreeMemory() + "]");
+        int downloadingPercentage = DownloadFileUtil.getInstance().getDownloadPercentage(currentDownloadSize, lenghtOfFile);
+        System.out.print("\r Downloading " + getFileName() + " " + downloadingPercentage + "% (" + currentDownloadSize + " of " + lenghtOfFile + " bytes), [Remaining memory size = " + getFreeMemory() + "]");
     }
 
     private boolean alreadyDownload() {
@@ -56,7 +57,6 @@ public abstract class DownloadService {
     public long getFreeMemory() {
       return new File("/").getFreeSpace();
     }
-
 
     public String getUrl() {
         return url;
@@ -71,15 +71,6 @@ public abstract class DownloadService {
     }
 
     public void setTargetLocation(String targetLocation) {
-        final File targetDirectory = new File(targetLocation);
-        if(!targetDirectory.exists()) {
-            boolean result = targetDirectory.mkdir();
-            if(result) {
-                System.out.println("The directory \"" + targetLocation + "\" is created !");
-            }
-        } else {
-            System.out.println("The directory \"" + targetLocation + "\" already exist");
-        }
         this.targetLocation = targetLocation;
     }
 
