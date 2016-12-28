@@ -1,11 +1,12 @@
 package download.data.utility;
 
 import org.springframework.stereotype.Service;
-
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
- * Created by U8016976 on 28-Dec-2016.
+ * Created by Somjade on 28-Dec-2016.
  */
 @Service
 public class DownloadFileUtil {
@@ -45,7 +46,13 @@ public class DownloadFileUtil {
     }
 
     public String extractFileNameFromURL(String url){
-        return url.substring(url.lastIndexOf('/') + 1);
+
+        if (url.isEmpty())
+            return null;
+
+        String[] tokens = url.split("[\\\\|/]");
+        return tokens[tokens.length - 1];
+        //return url.substring(url.lastIndexOf('/') + 1);
     }
 
     public String generateMD5(String str) {
@@ -66,5 +73,15 @@ public class DownloadFileUtil {
         if (!inputURLs.isEmpty())
             return inputURLs.split( ",\\s*" ); // split on commas
         return null;
+    }
+
+    public long getfreeMemoryInBytes() {
+        //Returns the amount of free memory in the Java Virtual Machine.
+        return Runtime.getRuntime().freeMemory();
+    }
+
+    public long getfreeSpaceInBytes(String pathName){
+        Path path = Paths.get(pathName);
+        return new File(String.valueOf(path.getRoot())).getFreeSpace();
     }
 }

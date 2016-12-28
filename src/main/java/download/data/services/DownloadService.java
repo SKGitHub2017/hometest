@@ -5,14 +5,10 @@ import download.data.exception.FileAlreadyDownloadException;
 import download.data.exception.NotEnoughDiskSpaceException;
 import download.data.exception.NotEnoughMemoryException;
 import download.data.utility.DownloadFileUtil;
-import org.apache.commons.io.FileSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +17,6 @@ public abstract class DownloadService {
 
     protected static Logger log = LoggerFactory.getLogger(DownloadService.class);
 
-    //private static Map<String, String> downloadedMap = new HashMap<>();
     private static Map<String, String> synchronizedMap = Collections.synchronizedMap(new HashMap<String, String>());
 
     private String url;
@@ -38,22 +33,21 @@ public abstract class DownloadService {
 
         lenghtOfFile = getFileSize();
 
-        long freeMemory = getfreeMemoryInByte();
-        if (lenghtOfFile > freeMemory) {
+        long freeMemoryInBytes = DownloadFileUtil.getInstance().getfreeMemoryInBytes();
+        if (lenghtOfFile > freeMemoryInBytes) {
             log.error("=============== ERROR ================");
             log.error("Memory is not enough to save the file.");
             log.error("File size is : {} ", lenghtOfFile);
-            log.error("Memory available size is : {} ", freeMemory);
+            log.error("Memory available size is : {} bytes", freeMemoryInBytes);
             throw new NotEnoughMemoryException("Memory is not enough");
         }
 
-        long freeDiskSpace = getfreeSpaceInByte();
-        //freeDiskSpace = 20;
-        if (lenghtOfFile > freeDiskSpace) {
+        long freeDiskSpaceInBytes = DownloadFileUtil.getInstance().getfreeSpaceInBytes(getTargetLocation());
+        if (lenghtOfFile > freeDiskSpaceInBytes) {
             log.error("=============== ERROR ================");
             log.error("Disk free space (unused) is not enough to save the file.");
             log.error("File size is : {} ", lenghtOfFile);
-            log.error("Disk space available size is : {} ", freeDiskSpace);
+            log.error("Disk space available size is : {} bytes", freeDiskSpaceInBytes);
             throw new NotEnoughDiskSpaceException("Disk space is not enough");
         }
 
@@ -70,7 +64,14 @@ public abstract class DownloadService {
 
     protected void updateProgress(int currentDownloadSize) {
         int downloadingPercentage = DownloadFileUtil.getInstance().getDownloadPercentage(currentDownloadSize, lenghtOfFile);
-        System.out.print("\r Downloading " + getFileName() + " " + downloadingPercentage + "% (" + currentDownloadSize + " of " + lenghtOfFile + " bytes), [Disk space left (unused) in byte = " + getfreeSpaceInByte() + ", JVM heap memory size left (unused) in byte = " + getfreeMemoryInByte() + "]");
+        System.out.print(MessageFormat.format("\r Downloading from {0} to {1} , {2}% [{3} of {4} KB], [Disk space left (unused) {5} MB, JVM heap memory size left (unused) {6} MB]",
+                getUrl(),
+                getTargetLocation(),
+                downloadingPercentage,
+                (currentDownloadSize / 1024),
+                (lenghtOfFile / 1024),
+                ((DownloadFileUtil.getInstance().getfreeSpaceInBytes(getTargetLocation()) / 1024) / 1024),
+                ((DownloadFileUtil.getInstance().getfreeMemoryInBytes() / 1024) / 1024)));
     }
 
     private boolean alreadyDownload() {
@@ -84,15 +85,15 @@ public abstract class DownloadService {
         return false;
     }
 
-    public long getfreeMemoryInByte() {
+/*    public long getfreeMemoryInBytes() {
         //Returns the amount of free memory in the Java Virtual Machine.
         return Runtime.getRuntime().freeMemory();
     }
 
-    public long getfreeSpaceInByte(){
+    public long getfreeSpaceInBytes(){
         Path path = Paths.get(getTargetLocation());
         return new File(String.valueOf(path.getRoot())).getFreeSpace();
-    }
+    }*/
 
     public String getUrl() {
         return url;

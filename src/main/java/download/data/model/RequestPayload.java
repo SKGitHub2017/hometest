@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class RequestPayload {
 
-    @JsonProperty("url")
-    @SerializedName("url")
+    @JsonProperty("urls")
+    @SerializedName("urls")
     private String url;
 
     public String getUrl() {
@@ -20,6 +20,6 @@ public class RequestPayload {
 
     @Override
     public String toString() {
-        return "RequestPayload{url='" + url + "'}";
+        return "RequestPayload{urls='" + url + "'}";
     }
 }
