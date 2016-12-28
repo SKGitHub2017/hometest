@@ -1,11 +1,14 @@
 package download.data.services.implementation;
 
+import com.google.common.util.concurrent.RateLimiter;
 import download.data.exception.DownloadServiceException;
 import download.data.services.DownloadService;
+import download.data.services.ThrottlingInputStream;
+import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -35,10 +38,14 @@ public class HttpDownloadService extends DownloadService {
 
     @Override
     protected boolean download() {
-        BufferedInputStream bufferedInputStream = null;
+        //BufferedInputStream bufferedInputStream = null;
+        ThrottlingInputStream bufferedInputStream = null;
         FileOutputStream fileOutputStream = null;
+        final RateLimiter throttler = RateLimiter.create(64 * FileUtils.ONE_KB);
+
         try {
-            bufferedInputStream = new BufferedInputStream(new URL(getUrl()).openStream());
+            //bufferedInputStream = new BufferedInputStream(new URL(getUrl()).openStream());
+            bufferedInputStream = new ThrottlingInputStream(new URL(getUrl()).openStream(), throttler);
             fileOutputStream = new FileOutputStream(getTargetLocation() + "/" + getFileName());
 
             final byte data[] = new byte[1024];

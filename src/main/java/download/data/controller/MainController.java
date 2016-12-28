@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import java.io.File;
-import java.util.UUID;
 
 @RestController
 public class MainController {
@@ -22,7 +21,6 @@ public class MainController {
     /*
         {
         "url" : "http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg, ftp://other.file.com/other, sftp://and.also.this/ending",
-        "file_name" : "test3.jpg"
         }
      */
     @RequestMapping(value = "/download", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
