@@ -8,6 +8,7 @@ import download.data.utility.DownloadFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public abstract class DownloadService {
 
     protected static Logger log = LoggerFactory.getLogger(DownloadService.class);
 
-    private static Map<String, String> synchronizedMap = Collections.synchronizedMap(new HashMap<String, String>());
+    //private static Map<String, String> synchronizedMap = Collections.synchronizedMap(new HashMap<String, String>());
 
     private String url;
 
@@ -63,18 +64,21 @@ public abstract class DownloadService {
     protected abstract boolean download();
 
     protected void updateProgress(int currentDownloadSize) {
-        int downloadingPercentage = DownloadFileUtil.getInstance().getDownloadPercentage(currentDownloadSize, lenghtOfFile);
-        System.out.print(MessageFormat.format("\r Downloading from {0} to {1} , {2}% [{3} of {4} KB], [Disk space left (unused) {5} MB, JVM heap memory size left (unused) {6} MB]",
+        DownloadFileUtil downloadFileUtil = DownloadFileUtil.getInstance();
+        int downloadingPercentage = downloadFileUtil.getDownloadPercentage(currentDownloadSize, lenghtOfFile);
+
+        System.out.print(MessageFormat.format("\r Downloading from {0} to {1} , {2}% [{3} of {4}], [Disk space left (unused) {5}, JVM heap memory size left (unused) {6}]",
                 getUrl(),
-                getTargetLocation(),
+                downloadFileUtil.getFullPath(getTargetLocation(), getFileName()),
                 downloadingPercentage,
-                (currentDownloadSize / 1024),
-                (lenghtOfFile / 1024),
-                ((DownloadFileUtil.getInstance().getfreeSpaceInBytes(getTargetLocation()) / 1024) / 1024),
-                ((DownloadFileUtil.getInstance().getfreeMemoryInBytes() / 1024) / 1024)));
+                downloadFileUtil.formatSizeFromByteToHumanReadable(currentDownloadSize),
+                downloadFileUtil.formatSizeFromByteToHumanReadable(lenghtOfFile),
+                downloadFileUtil.formatSizeFromByteToHumanReadable(downloadFileUtil.getfreeSpaceInBytes(getTargetLocation())),
+                downloadFileUtil.formatSizeFromByteToHumanReadable(downloadFileUtil.getfreeMemoryInBytes())));
     }
 
     private boolean alreadyDownload() {
+/*
         String key = DownloadFileUtil.getInstance().generateMD5(getFileName());
         synchronized (synchronizedMap) {
             if (synchronizedMap.containsKey(key)) {
@@ -82,18 +86,11 @@ public abstract class DownloadService {
             }
             synchronizedMap.put(key, getUrl());
         }
-        return false;
+        return false;*/
+        String targetFile = DownloadFileUtil.getInstance().getFullPath(getTargetLocation(), getFileName());
+        File downloadFile = new File(targetFile);
+        return downloadFile.exists();
     }
-
-/*    public long getfreeMemoryInBytes() {
-        //Returns the amount of free memory in the Java Virtual Machine.
-        return Runtime.getRuntime().freeMemory();
-    }
-
-    public long getfreeSpaceInBytes(){
-        Path path = Paths.get(getTargetLocation());
-        return new File(String.valueOf(path.getRoot())).getFreeSpace();
-    }*/
 
     public String getUrl() {
         return url;

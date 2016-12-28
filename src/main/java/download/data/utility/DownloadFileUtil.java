@@ -84,4 +84,20 @@ public class DownloadFileUtil {
         Path path = Paths.get(pathName);
         return new File(String.valueOf(path.getRoot())).getFreeSpace();
     }
+
+    public String formatSizeFromByteToHumanReadable(long bytes) {
+        int u = 0;
+        for (;bytes > 1024*1024; bytes >>= 10) {
+            u++;
+        }
+        if (bytes > 1024)
+            u++;
+        return String.format("%.1f %cB", bytes/1024f, " kMGTPE".charAt(u));
+    }
+
+    public String getFullPath(String targetLocation, String fileName) {
+        Path rootPath = Paths.get(targetLocation);
+        Path partialPath = Paths.get(fileName);
+        return rootPath.resolve(partialPath).toString();
+    }
 }

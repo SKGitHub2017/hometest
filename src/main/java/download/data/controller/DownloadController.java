@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class MainController {
+public class DownloadController {
 
     @Value("${download.file.location}")
     private String targetLocation;
@@ -22,7 +22,7 @@ public class MainController {
     private DownloadFileUtil downloadUtil;
     /*
         {
-        "url" : "http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg, ftp://other.file.com/other, sftp://and.also.this/ending",
+        "urls" : "http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg, ftp://other.file.com/other, sftp://and.also.this/ending",
         }
      */
     @RequestMapping(value = "/download", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,12 +48,9 @@ public class MainController {
 
                     // Process download content
                     downloadService.handler();
-
-                    System.out.println();
                     System.out.println("!!!!!!!!!! Download completed !!!!!!!!!");
                 }
             } catch (Exception ex) {
-                System.out.println();
                 System.out.println("************ Download failed : " + ex.getMessage() + " *************");
             }
         }
