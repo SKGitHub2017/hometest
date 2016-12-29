@@ -51,7 +51,7 @@ java -jar .\target\download-1.0.0.jar --spring.config.location=C:\\config\applic
 curl -X POST -H "Content-Type: application/json" -d "{\"urls\" : \"http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg\"}" "http://localhost:8081/download"
 ```
 
-### Sample Success to downloads
+### Sample success to downloads
 ```java
 Request:
 curl -X POST -H "Content-Type: application/json" -d "{\"urls\" : \"http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg\"}" "http://localhost:8888/download"
