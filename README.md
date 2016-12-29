@@ -26,13 +26,27 @@ mvn clean install
 ```java
 1.Run with default config server.port=8888 and download.file.location=C:\\download
 
-java -jar download-1.0.0.jar
+java -jar .\target\download-1.0.0.jar
 
 curl -X POST -H "Content-Type: application/json" -d '{"urls" : "http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg"}' "http://localhost:8888/download"
 
 2.Run with override server.port=8080 and download.file.location=C:\\download.1
 
-java -jar download-1.0.0.jar --server.port=8080 --download.file.location=C:\\download.1
+java -jar .\target\download-1.0.0.jar --server.port=8080 --download.file.location=C:\\download.1
 
 curl -X POST -H "Content-Type: application/json" -d '{"urls" : "http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg"}' "http://localhost:8080/download"
+
+3.Run with external YAML property configuration file (In this case we use YAML property file)
+The relevant part is the application.yml file which goes to C:\\config\application.yml. The contents could look like this:
+
+server:
+     port: 8081
+
+download :
+    file :
+      location : C:\\downloads
+
+java -jar .\target\download-1.0.0.jar -Dspring.config.location=C:\\config\application.yml
+
+curl -X POST -H "Content-Type: application/json" -d '{"urls" : "http://weknowyourdreams.com/images/sea/sea-01.jpg, http://weknowyourdreams.com/images/sea/sea-02.jpg"}' "http://localhost:8081/download"
 ```

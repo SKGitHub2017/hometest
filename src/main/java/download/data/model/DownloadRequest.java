@@ -4,7 +4,7 @@ package download.data.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
-public class RequestPayload {
+public class DownloadRequest {
 
     @JsonProperty("urls")
     @SerializedName("urls")
@@ -20,6 +20,6 @@ public class RequestPayload {
 
     @Override
     public String toString() {
-        return "RequestPayload{urls='" + url + "'}";
+        return "DownloadRequest{urls='" + url + "'}";
     }
 }
